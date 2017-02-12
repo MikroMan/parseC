@@ -90,7 +90,6 @@ char *get_long_name(Argument *arg) {
 
 char *get_short_name(Argument *arg) {
     return arg->short_opt == NULL ? "" : arg->short_opt;
-
 }
 
 
@@ -100,9 +99,8 @@ char *get_name_from_opt(char *opt) {
         exit(1);
     } else if (opt[1] == '-') {//long opt
         return opt + 2;
-    } else {
+    } else { //short _opt
         return opt + 1;
-    }
 }
 
 
@@ -111,9 +109,7 @@ Argument *get_arg_by_name(const char *name, Argument **args) {
 
     int i = 0;
     while (i < ARG_LIST_LEN && args[i] != NULL) {
-        if (correct_arg(args[i], name)) {
-            return args[i];
-        }
+        if (correct_arg(args[i], name)) return args[i];
         i++;
     }
 
@@ -130,10 +126,10 @@ bool correct_arg(Argument *arg, const char *name) {
 
 void add_argument(Argument **args, const char *short_opt, const char *long_opt, ArgType type, const char *description,
                   bool required) {
+    if (type == NONE) PEXIT("Argument cannot be of type NONE.");
+
     int i = 0;
-    while (args[i] != NULL && i < ARG_LIST_LEN) {
-        i++;
-    }
+    while (args[i] != NULL && i < ARG_LIST_LEN) i++;
 
     if (i == ARG_LIST_LEN) {
         //TODO: realloc
@@ -148,11 +144,10 @@ void add_argument(Argument **args, const char *short_opt, const char *long_opt, 
 
     args[i]->short_opt = (short_opt == NULL) ? NULL : strdup(short_opt);
     args[i]->long_opt = (long_opt == NULL) ? NULL : strdup(long_opt);
-    args[i]->type = type;
-
     args[i]->description = description == NULL ? "" : strdup(description);
-    args[i]->present = false;
+    args[i]->type = type;
     args[i]->required = required;
+    args[i]->present = false;
 
 
     if (type == BOOL) args[i]->v.bool_val = false;
@@ -181,7 +176,7 @@ double get_double_val(Argument *arg) {
 }
 
 char *get_string_val(Argument *arg) {
-    if (arg == NULL) return 0;
+    if (arg == NULL) return NULL;
     if (arg->type != STRING) {
         illegal_access_exit(arg->type, STRING);
     }
@@ -189,7 +184,7 @@ char *get_string_val(Argument *arg) {
 }
 
 bool get_bool_val(Argument *arg) {
-    if (arg == NULL) return 0;
+    if (arg == NULL) return false;
     if (arg->type != BOOL) {
         illegal_access_exit(arg->type, BOOL);
     }
@@ -216,9 +211,7 @@ void print_help(Argument **args) {
     int i = 0;
 
     while (args[i] != NULL && i < ARG_LIST_LEN) {
-
         print_arg_help(args[i]);
-
         i++;
     }
 }

@@ -9,3 +9,5 @@ parseC - lightweight command line argument parser library for C99
 * Figure out why freeing strings in arguments structs kills program
 * Use variable length of argument list!
 * Fix - and -- displays when NULL options
+* Add API to check if arg was present
+* Positional arguments
