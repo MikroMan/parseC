@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-Wall -Wextra -I.
+CFLAGS=-g -Wall -Wextra -I.
 DEPS= argparse.h
 
 argparse.o: argparse.c $(DEPS)

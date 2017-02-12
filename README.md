@@ -8,4 +8,4 @@ parseC - lightweight command line argument parser library for C99
 * Long options using equals sign (e.g --long_opt=XYZ)
 * Figure out why freeing strings in arguments structs kills program
 * Use variable length of argument list!
-* Fix displaying NULL values in Debug/help for missing options
+* Fix - and -- displays when NULL options

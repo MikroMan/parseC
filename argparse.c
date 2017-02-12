@@ -33,12 +33,14 @@ void parse_args(Argument **args, int argc, char *argv[]) {
     for (int i = 1; i < argc; ++i) {
         char *name = get_name_from_opt(argv[i]);
         Argument *arg = get_arg_by_name(name, args);
-        if(arg->type == NONE) continue;
+
 
         if (arg == NULL) {
             printf("Unknown option: %s\n", argv[i]);
             print_help(args);
             exit(1);
+        } else if (arg->type == NONE) {
+            continue;
         } else {
             parse_value(arg, argc, i, argv);
             if (arg->type != BOOL) i++;
@@ -56,12 +58,12 @@ void parse_value(Argument *arg, int argc, int index, char **argv) {
     }
 
     index++;
-    if(index >= argc) {
-        printf("Option missing value: -%s --%s\n", arg->short_opt, arg->long_opt);
+    if (index >= argc) {
+        printf("Option missing value: -%s --%s\n", get_short_name(arg), get_long_name(arg));
         exit(1);
     }
 
-    if(arg->type == STRING) {
+    if (arg->type == STRING) {
         arg->v.str_val = strdup(argv[index]);
     } else if (arg->type == INT) {
         arg->v.int_val = atoi(argv[index]);
@@ -75,11 +77,20 @@ void check_required_opts(Argument **args) {
     int i = 0;
     while (i < ARG_LIST_LEN && args[i] != NULL) {
         if (args[i]->required && !(args[i]->present)) {
-            printf("Missing argument: -%s --%s\n", args[i]->short_opt, args[i]->long_opt);
+            printf("Missing argument: -%s --%s\n", get_short_name(args[i]), get_long_name(args[i]));
             exit(1);
         }
         i++;
     }
+}
+
+char *get_long_name(Argument *arg) {
+    return arg->long_opt == NULL ? "" : arg->long_opt;
+}
+
+char *get_short_name(Argument *arg) {
+    return arg->short_opt == NULL ? "" : arg->short_opt;
+
 }
 
 
@@ -100,13 +111,21 @@ Argument *get_arg_by_name(const char *name, Argument **args) {
 
     int i = 0;
     while (i < ARG_LIST_LEN && args[i] != NULL) {
-        if (strcmp(args[i]->short_opt, name) == 0 || strcmp(args[i]->long_opt, name) == 0) {
+        if (correct_arg(args[i], name)) {
             return args[i];
         }
         i++;
     }
 
     return NULL;
+}
+
+bool correct_arg(Argument *arg, const char *name) {
+    if (arg->short_opt != NULL && strcmp(arg->short_opt, name) == 0)
+        return true;
+    else if (arg->long_opt != NULL && strcmp(arg->long_opt, name) == 0)
+        return true;
+    else return false;
 }
 
 void add_argument(Argument **args, const char *short_opt, const char *long_opt, ArgType type, const char *description,
@@ -117,39 +136,25 @@ void add_argument(Argument **args, const char *short_opt, const char *long_opt, 
     }
 
     if (i == ARG_LIST_LEN) {
-        printf("Implement memory reallocation for more arguments. Exiting.");
-        //TODO: realloc, stderr output...
-        exit(1);
+        //TODO: realloc
+        PEXIT("Implement memory reallocation for more arguments.");
     }
 
     if (short_opt == NULL && long_opt == NULL) {
-        printf("Positional params not allowed. Must have short OR long option. Exiting.");
-        exit(1);
+        PEXIT("Positional params not allowed. Must have short OR long option. Exiting.");
     }
 
     args[i] = (Argument *) malloc(sizeof(Argument));
 
-    if (short_opt == NULL) {
-        args[i]->short_opt = NULL;
-    } else {
-        args[i]->short_opt = strdup(short_opt);
-    }
-
-
-    if (long_opt == NULL) {
-        args[i]->long_opt = NULL;
-    } else {
-        args[i]->long_opt = strdup(long_opt);
-    }
-
+    args[i]->short_opt = (short_opt == NULL) ? NULL : strdup(short_opt);
+    args[i]->long_opt = (long_opt == NULL) ? NULL : strdup(long_opt);
     args[i]->type = type;
-    if (description == NULL) {
-        args[i]->description = NULL;
-    } else {
-        args[i]->description = strdup(description);
-    }
+
+    args[i]->description = description == NULL ? "" : strdup(description);
     args[i]->present = false;
     args[i]->required = required;
+
+
     if (type == BOOL) args[i]->v.bool_val = false;
     //TODO add default values
 
@@ -230,7 +235,7 @@ void print_values(Argument **args) {
 
 void print_arg_string(Argument *arg) {
 
-    printf("\t-%-5s/ --%-10s\t: ", arg->short_opt, arg->long_opt);
+    printf("\t-%-5s/ --%-10s\t: ", get_short_name(arg), get_long_name(arg));
     print_arg_value(arg);
     printf("\n");
 }
@@ -257,7 +262,10 @@ void print_arg_value(Argument *arg) {
 
 void print_arg_help(Argument *arg) {
     //TODO format with dynamic lengths!!
-    printf("\t-%-5s\t--%-10s\t\t\t%-30s\t%-8s : %s\n", arg->short_opt, arg->long_opt, arg->description, arg->required ? "true" : "false",
+    printf("\t-%-5s", get_short_name(arg));
+    printf("\t--%-10s\t\t\t", get_long_name(arg));
+    printf("%-30s\t%-8s : %s\n", arg->description,
+           bool_to_string(arg->required),
            argtype_to_string(arg->type));
 }
 

@@ -40,7 +40,8 @@ void print_arg_help(Argument *arg);
 
 char *argtype_to_string(ArgType type);
 
-void add_argument(Argument **args, const char *short_opt, const char *long_opt, ArgType type, const char *description, bool required);
+void add_argument(Argument **args, const char *short_opt, const char *long_opt, ArgType type, const char *description,
+                  bool required);
 
 
 void destroy(Argument **args);
@@ -48,23 +49,35 @@ void destroy(Argument **args);
 Argument *get_arg_by_name(const char *name, Argument **args);
 
 int get_int_val(Argument *arg);
+
 bool get_bool_val(Argument *arg);
-char* get_string_val(Argument *arg);
+
+char *get_string_val(Argument *arg);
+
 double get_double_val(Argument *arg);
 
 void illegal_access_exit(ArgType actual, ArgType expected);
 
-void parse_args(Argument **args, int argc, char* argv[]);
-void print_values(Argument **args);
-void print_arg_string(Argument *arg);
-void print_arg_value(Argument* arg);
+void parse_args(Argument **args, int argc, char *argv[]);
 
-char* get_name_from_opt(char *opt);
+void print_values(Argument **args);
+
+void print_arg_string(Argument *arg);
+
+void print_arg_value(Argument *arg);
+
+char *get_name_from_opt(char *opt);
+
 void check_required_opts(Argument **args);
+
 void parse_value(Argument *arg, int argc, int index, char **argv);
 
 char *bool_to_string(bool b);
 
+bool correct_arg(Argument *arg, const char *name);
+
+char *get_short_name(Argument *arg);
+char *get_long_name(Argument *arg);
 
 
 #endif
