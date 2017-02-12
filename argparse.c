@@ -101,6 +101,7 @@ char *get_name_from_opt(char *opt) {
         return opt + 2;
     } else { //short _opt
         return opt + 1;
+    }
 }
 
 
@@ -126,7 +127,9 @@ bool correct_arg(Argument *arg, const char *name) {
 
 void add_argument(Argument **args, const char *short_opt, const char *long_opt, ArgType type, const char *description,
                   bool required) {
-    if (type == NONE) PEXIT("Argument cannot be of type NONE.");
+    if (type == NONE) {
+        PEXIT("Argument cannot be of type NONE.");
+    }
 
     int i = 0;
     while (args[i] != NULL && i < ARG_LIST_LEN) i++;

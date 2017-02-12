@@ -9,12 +9,16 @@ int main(int argc, char *argv[]) {
 
     add_argument(cli_args, "fp", "filepath", STRING, NULL, false);
     add_argument(cli_args, "d", NULL, STRING, "Starting date.", false);
-    add_argument(cli_args, NULL, "ok", INT, NULL, true);
+    add_argument(cli_args, NULL, "chars", INT, NULL, true);
     add_argument(cli_args, "u", "sort", BOOL, "Sort YES/NO.", false);
 
     print_help(cli_args);
     parse_args(cli_args, argc, argv);
     print_values(cli_args);
+
+    Argument *chars_arg = get_arg_by_name("chars", cli_args);
+    int chars = get_int_val(chars_arg);
+    printf("Chars used: %d\n", chars);
 
     destroy(cli_args);
 
