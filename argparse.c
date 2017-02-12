@@ -14,14 +14,10 @@ Argument **init_arg_parser() {
 
 Argument *init_help() {
     Argument *help = (Argument *) malloc(sizeof(Argument));
-    help->short_opt = (char *) malloc(5 * sizeof(char));
-    help->long_opt = (char *) malloc(10 * sizeof(char));
-    help->description = (char *) malloc(40 * sizeof(char));
-
+    help->short_opt = strdup("h");
+    help->long_opt = strdup("help");
+    help->description = strdup("Show this help screen.");
     help->type = NONE;
-    help->long_opt = "help";
-    help->short_opt = "h";
-    help->description = "Displays this help screen";
     help->required = false;
     help->present = false;
 
@@ -286,7 +282,8 @@ void destroy(Argument **args) {
     while (i < ARG_LIST_LEN && args[i] != NULL) {
 
         //TODO figure out why it coredumps???
-        //free(args[i]->short_opt);
+        free(args[i]->short_opt);
+        //args[i]->short_opt = NULL;
         //free(args[i]->long_opt);
         //free(args[i]->description);
         free(args[i]);
