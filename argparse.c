@@ -63,7 +63,7 @@ void parse_value(Argument *arg, int argc, int index, char **argv) {
     }
 
     if (arg->type == STRING) {
-        arg->v.str_val = strdup(argv[index]);
+        arg->v.str_val = argv[index];
     } else if (arg->type == INT) {
         arg->v.int_val = atoi(argv[index]);
     } else if (arg->type == DOUBLE) {
@@ -151,7 +151,7 @@ void add_argument(Argument **args, const char *short_opt, const char *long_opt, 
 
     args[i]->short_opt = (short_opt == NULL) ? NULL : strdup(short_opt);
     args[i]->long_opt = (long_opt == NULL) ? NULL : strdup(long_opt);
-    args[i]->description = description == NULL ? "" : strdup(description);
+    args[i]->description = description == NULL ? strdup("") : strdup(description);
     args[i]->type = type;
     args[i]->required = required;
     args[i]->present = false;
