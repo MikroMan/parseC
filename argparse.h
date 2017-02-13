@@ -50,17 +50,42 @@ typedef struct Arg {
 /*
  * API
  */
+
+/// Initialize argument parser
+/// @returns Array of pointers to Argument data
 Argument **init_arg_parser();
 
+/// Displays help screen to output
+/// @param args Pointer to array of Argument pointers
 void print_help(Argument **args);
 
+/// Converts ArgType Enum to string.
+/// INT - "INT"
+/// DOUBLE - "DOUBLE"
+/// INT - "BOOL"
+/// STRING - "STRING"
+/// NONE - ""
+/// @param ArgType Enum value
 char *argtype_to_string(ArgType type);
 
+/// Adds argument to argparser list
+/// @param args Pointer array for arguments
+/// @param short_opt String for short argument option (e.g. h for -h)
+/// @param long_opt String for long argument option (e.g. help for --help)
+/// @param type ArgType enum value for type of argument (INT, STRING, DOUBLE, BOOL)
+/// @param description String describing the argument
+/// @param required Boolean value describing whether argument must be present in program call
 void add_argument(Argument **args, const char *short_opt, const char *long_opt, ArgType type, const char *description,
                   bool required);
 
+/// Frees memory allocated by Argument Parser
+/// @param Array of pointers to Argument structures used in argument parsing
 void destroy(Argument **args);
 
+/// Retrieves argument specified by long or short option string from array, if it exists.
+/// @param name String representing short or long option.
+/// @param args Array of Argument for parsing.
+/// @returns Pointer to Argument structure if found, NULL otherwise
 Argument *get_arg_by_name(const char *name, Argument **args);
 
 int get_int_val(Argument *arg);

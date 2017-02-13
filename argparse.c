@@ -35,6 +35,9 @@ void parse_args(Argument **args, int argc, char *argv[]) {
             printf("Unknown option: %s\n", argv[i]);
             print_help(args);
             exit(1);
+        } else if (strcmp(arg->long_opt, "help") == 0) {
+            print_help(args);
+            exit(0);
         } else if (arg->type == NONE) {
             continue;
         } else {

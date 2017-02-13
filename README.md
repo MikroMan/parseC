@@ -10,4 +10,3 @@ parseC - lightweight command line argument parser library for C99
 * Fix - and -- displays when NULL options
 * Add API to check if arg was present
 * Positional arguments
-* Disallow same long/short opts
