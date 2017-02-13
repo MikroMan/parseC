@@ -289,11 +289,9 @@ void destroy(Argument **args) {
     int i = 0;
     while (i < ARG_LIST_LEN && args[i] != NULL) {
 
-        //TODO figure out why it coredumps???
         free(args[i]->short_opt);
-        //args[i]->short_opt = NULL;
-        //free(args[i]->long_opt);
-        //free(args[i]->description);
+        free(args[i]->long_opt);
+        free(args[i]->description);
         free(args[i]);
         i++;
     }
