@@ -7,7 +7,7 @@
 
 Argument **init_arg_parser() {
     Argument **args = (Argument **) malloc(ARG_LIST_LEN * sizeof(Argument *));
-    memset(args, 0, ARG_LIST_LEN);
+    for (int i = 0; i < ARG_LIST_LEN; i++) args[i] = NULL;
     args[0] = init_help();
     return args;
 }
@@ -125,6 +125,11 @@ void add_argument(Argument **args, const char *short_opt, const char *long_opt, 
                   bool required) {
     if (type == NONE) {
         PEXIT("Argument cannot be of type NONE.");
+    }
+
+    if (get_arg_by_name(short_opt, args) != NULL || get_arg_by_name(long_opt, args) != NULL) {
+        printf("ArgParser error: Such argument already exists: -%s / --%s", short_opt, long_opt);
+        exit(1);
     }
 
     int i = 0;
